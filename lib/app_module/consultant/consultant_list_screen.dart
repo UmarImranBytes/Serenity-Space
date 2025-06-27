@@ -110,8 +110,6 @@ class ConsultantController extends GetxController {
     ),
   ];
 
-
-
   RxList<Consultant> filteredConsultants = <Consultant>[].obs;
 
   @override
@@ -123,7 +121,7 @@ class ConsultantController extends GetxController {
 
   void clearSearch() {
     searchController.clear();
-    filterConsultants(); // refresh list
+    filterConsultants();
   }
 
   void filterConsultants() {
@@ -131,10 +129,8 @@ class ConsultantController extends GetxController {
     if (query.isEmpty) {
       filteredConsultants.value = allConsultants;
     } else {
-      filteredConsultants.value = allConsultants
-          .where((consultant) =>
-          consultant.name.toLowerCase().contains(query))
-          .toList();
+      filteredConsultants.value = allConsultants.where((consultant) =>
+          consultant.name.toLowerCase().contains(query)).toList();
     }
   }
 }
@@ -145,137 +141,130 @@ class ConsultantScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-          height: Get.height,
-          width: Get.width,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF2E97E8), // Start color
-                Color(0xFF9BF2B1), // End color
+      body: Container(
+        height: Get.height,
+        width: Get.width,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF2E97E8), Color(0xFF9BF2B1)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText(
+                  text: 'Chat with consultant now',
+                  size: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: controller.searchController,
+                        decoration: InputDecoration(
+                          hintText: 'Search consultant',
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: controller.clearSearch,
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: Obx(() {
+                    return ListView.builder(
+                      itemCount: controller.filteredConsultants.length,
+                      itemBuilder: (context, index) {
+                        final consultant = controller.filteredConsultants[index];
+                        return InkWell(
+                          onTap: () => Get.to(() => ConsultantDetailScreen(consultant: consultant)),
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryAppBar,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 6,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 28,
+                                  backgroundColor: Colors.white,
+                                  child: Icon(Icons.person, color: Colors.blue, size: 32),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        consultant.name,
+                                        style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        consultant.type,
+                                        style: const TextStyle(color: Colors.white70),
+                                      ),
+                                      Row(
+                                        children: List.generate(
+                                          consultant.rating.floor(),
+                                              (i) => const Icon(Icons.star, color: Colors.orange, size: 16),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => Get.to(() => ConsultantDetailScreen(consultant: consultant)),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: Colors.black,
+                                  ),
+                                  child: const Text('Chat'),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }),
+                )
               ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
             ),
           ),
-    child: LayoutBuilder(
-    builder: (BuildContext context, BoxConstraints constraints) {
-    double screenWidth = constraints.maxWidth;
-    double screenHeight = constraints.maxHeight;
-return
-
-    Padding(
-    padding: const EdgeInsets.all(12.0),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    SizedBox(height: 30),
-    AppText(text: 'Chat with consultant now',size: 24,fontWeight: FontWeight.bold,color: Colors.white),
-    SizedBox(height: 16),
-    Row(
-    children: [
-    Expanded(
-    child: TextField(
-    controller: controller.searchController,
-    decoration: InputDecoration(
-    hintText: 'Search consultant',
-    border: OutlineInputBorder(),
-    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-    ),
-    ),
-    ),
-    SizedBox(width: 8),
-    GestureDetector(
-    onTap: controller.clearSearch,
-    child: Text(
-    'Cancel',
-    style: TextStyle(color: Colors.white),
-    ),
-    )
-    ],
-    ),
-
-
-// List of consultants
-    Expanded(
-    child: Obx(() {
-    return ListView.builder(
-    itemCount: controller.filteredConsultants.length,
-    itemBuilder: (context, index) {
-    final consultant = controller.filteredConsultants[index];
-    return Container(
-    margin: EdgeInsets.symmetric(vertical: 8),
-    padding: EdgeInsets.all(12),
-    decoration: BoxDecoration(
-    color: AppColors.primaryAppBar,
-    borderRadius: BorderRadius.circular(16),
-    ),
-    child: Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-//Icon(Icons.person, size: 48, color: Colors.blue),
-    Container(
-    width: 60,
-    height: 60,
-    decoration: BoxDecoration(
-    shape: BoxShape.circle,
-    border: Border.all(color: Colors.blue, width: 2),
-    color: Colors.transparent, // optional background color
-    ),
-    child: Center(
-    child: Icon(Icons.person, size: 40, color: Colors.blue),
-    ),
-    ),
-
-    SizedBox(width: 12),
-    Expanded(
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Text(consultant.name,
-    style: TextStyle(
-    color: Colors.white,
-    fontSize: 16,
-    fontWeight: FontWeight.bold)),
-    Text(consultant.type,
-    style: TextStyle(color: Colors.white,)),
-    Row(
-    children: List.generate(
-    consultant.rating.floor(),
-    (i) => Icon(Icons.star,
-    color: Colors.orange, size: 16),
-    ),
-    ),
-
-
-    ],
-    ),
-    ),
-    SizedBox(width: 8),
-    ElevatedButton(
-    onPressed: () {
-    Get.to(()=> ConsultantDetailScreen(consultant: consultant,));
-    },
-    style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.white,
-    foregroundColor: Colors.black,
-    ),
-    child: Text('Chat Now'),
-    )
-    ],
-    ),
-    );
-    },
-    );
-    }),
-    ),
-    ],
-    ),
-    )
-    ;}
-        )
-    )
+        ),
+      ),
     );
   }
 }
-

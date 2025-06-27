@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:serenity_space/app_module/chat/view/chat_pre_screen.dart';
 import 'package:serenity_space/app_module/chat/view/chat_screen.dart';
 import 'package:serenity_space/app_module/consultant/consultant_list_screen.dart';
 import 'package:serenity_space/app_module/home/home_screen.dart';
 import 'package:serenity_space/app_module/setting/setting_screen.dart';
+import 'package:serenity_space/app_module/activities/activities_screen.dart';
 import 'navbar_item.dart';
-
-import 'package:get/get.dart';
 
 class NavigationController extends GetxController {
   RxInt currentIndex = 0.obs;
-
   void changeTab(int index) {
     currentIndex.value = index;
   }
@@ -20,55 +19,64 @@ class NavigationController extends GetxController {
 class NavigationScreen extends StatelessWidget {
   final NavigationController navController = Get.put(NavigationController());
 
-  final List<Widget> children = [
+  final List<Widget> pages = [
     AiScreen(),
     HomeScreen(),
+    ActivitiesScreen(),
     ConsultantScreen(),
     SettingScreen(),
+  ];
+
+  final List<IconData> icons = [
+    Icons.smart_toy,
+    CupertinoIcons.speaker_3_fill,
+    Icons.self_improvement,
+    CupertinoIcons.person_2_fill,
+    Icons.settings,
+  ];
+
+  final List<String> labels = [
+    'AI',
+    'Self Care',
+    'Activities',
+    'Consultants',
+    'Settings',
   ];
 
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
-      body: children[navController.currentIndex.value],
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: pages[navController.currentIndex.value],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => navController.changeTab(2), // FAB opens Activities
+        backgroundColor: Colors.teal,
+        child: const Icon(Icons.self_improvement),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            BottomNavItem(
-              icon:  Icons.smart_toy,
-              label: 'AI',
-              index: 0,
-              currentIndex: navController.currentIndex.value,
-              onTap: navController.changeTab,
-            ),
-            BottomNavItem(
-              icon: CupertinoIcons.speaker_3_fill,
-              label: 'Sounds',
-              index: 1,
-              currentIndex: navController.currentIndex.value,
-              onTap: navController.changeTab,
-            ),
-            BottomNavItem(
-              icon: CupertinoIcons.person_2_fill,
-              label: 'Consultant',
-              index: 2,
-              currentIndex: navController.currentIndex.value,
-              onTap: navController.changeTab,
-            ),
-            BottomNavItem(
-              icon: Icons.settings,
-              label: 'Setting',
-              index: 3,
-              currentIndex: navController.currentIndex.value,
-              onTap: navController.changeTab,
-            ),
-
-
-          ],
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: SizedBox(
+          height: 64,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(labels.length, (index) {
+              // Skip center index to leave space for FAB
+              if (index == 2) return const SizedBox(width: 60);
+              return BottomNavItem(
+                icon: icons[index],
+                label: labels[index],
+                index: index,
+                currentIndex: navController.currentIndex.value,
+                onTap: navController.changeTab,
+              );
+            }),
+          ),
         ),
       ),
     ));
   }
 }
-

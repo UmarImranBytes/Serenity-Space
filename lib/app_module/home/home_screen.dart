@@ -1,96 +1,96 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:serenity_space/app_module/home/widget/card.dart';
 import 'package:serenity_space/widegts/custom_size_box_widget/custom_sized_box.dart';
 import '../../utils/app_color/app_color.dart';
-import '../../utils/constant/app_image_constant.dart';
-import '../../utils/constant/string_constant.dart';
 import '../../utils/fonts/app_fonts.dart';
 import '../../widegts/animation/animation.dart';
 import '../../widegts/app_text/textwidget.dart';
-import '../auth/view/login_screen.dart';
-import '../chat/view/chat_screen.dart';
 import 'controller/home_controller.dart';
+
 class HomeScreen extends StatelessWidget {
-   HomeScreen({super.key});
-final HomeController controller = Get.put(HomeController());
+  HomeScreen({super.key});
+  final HomeController controller = Get.put(HomeController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          "Serenity Space",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: Container(
         height: Get.height,
         width: Get.width,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFF2E97E8), // Start color
-              Color(0xFF9BF2B1), // End color
-            ],
+            colors: [Color(0xFF2E97E8), Color(0xFF9BF2B1)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            double screenWidth = constraints.maxWidth;
-            double screenHeight = constraints.maxHeight;
-
-            return Padding(
-              padding: const EdgeInsets.only(left: 14, right: 14, top: 50),
-              child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextWidget(
-                  text: "What do you want to reduce?",
-                  fSize: 17,
-                  fWeight: FontWeights.semiBold,
-                  textColor: AppColors.white,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 100, 16, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomAnimated(
+                tween: Tween<Offset>(
+                  begin: const Offset(0, -1),
+                  end: Offset.zero,
                 ),
-                Expanded(
-                  child: GridView.builder(
-                    itemCount: controller.mediaList.length,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 6,
-                      mainAxisSpacing: 8,
-                      childAspectRatio: 0.8,
-                    ),
-                    itemBuilder: (context, index) {
-                      final item = controller.mediaList[index];
-                      return MediaCardWidget(
+                duration: const Duration(milliseconds: 800),
+                child: TextWidget(
+                  text: "What do you want to reduce?",
+                  fSize: 20,
+                  fWeight: FontWeights.bold,
+                  textColor: Colors.white,
+                ),
+              ),
+              16.sbh,
+              Expanded(
+                child: GridView.builder(
+                  itemCount: controller.mediaList.length,
+                  physics: const BouncingScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 0.85,
+                  ),
+                  itemBuilder: (context, index) {
+                    final item = controller.mediaList[index];
+                    return CustomAnimated(
+                      tween: Tween<Offset>(
+                        begin: Offset(0, 0.3 * (index % 2 == 0 ? 1 : -1)),
+                        end: Offset.zero,
+                      ),
+                      duration: Duration(milliseconds: 600 + index * 100),
+                      child: MediaCardWidget(
                         imagePath: item['image']!,
                         name: item['name']!,
                         time: item['time']!,
-                        audioPath: item['audio']!,
-                        backgroundColor: AppColors.mutedElements,
-                      );
-                    },
-                  ),
+                        backgroundColor: Colors.white.withOpacity(0.9),
+                        audioTracks: List<String>.from(item['audioTracks']),
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
-
-            );
-          },
+              ),
+            ],
+          ),
         ),
       ),
-
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     // // TODO: Add your AI feature navigation or function here
-      //     // Get.snackbar("AI Assistant", "Coming Soon!", snackPosition: SnackPosition.BOTTOM);
-      //     Get.to(ChatScreen());
-      //   },
-      //   backgroundColor: Colors.white,
-      //   child: Icon(
-      //     Icons.smart_toy, // AI-looking icon
-      //     color: AppColors.primaryAppBar, // Your theme color
-      //     size: 28,
-      //   ),
-      // ),
-
     );
   }
 }

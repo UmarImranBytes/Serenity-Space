@@ -1,158 +1,159 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:serenity_space/widegts/app_text/app_text.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../../utils/app_color/app_color.dart';
+import '../../widegts/app_text/app_text.dart';
 import 'consultant_list_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ConsultantDetailScreen extends StatelessWidget {
   final Consultant consultant;
-   ConsultantDetailScreen({super.key,required this.consultant});
 
-    void _launchWhatsApp() async {
+  ConsultantDetailScreen({super.key, required this.consultant});
 
-    String phoneNumber = "923174689617"; // Replace with your number
-    String message = Uri.encodeComponent("wealth Wise! How i can help yoy ");
+  void _launchWhatsApp() async {
+    String phoneNumber = "923174689617";
+    String message = Uri.encodeComponent("Wealth Wise! How can I help you?");
     _launchUrl("https://wa.me/$phoneNumber?text=$message");
   }
-  void _launchUrl(String mail) async {
-    if (!await launchUrl(Uri.parse(mail))) throw 'Could not launch $mail';
+
+  void _launchUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final width = Get.width;
+    final height = Get.height;
+
     return Scaffold(
-      backgroundColor: Color(0xE7FFFFFF),
-      body: Padding(padding:  const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 30),
-          IconButton(onPressed: ()=> Get.back(), icon: Icon(Icons.arrow_back_ios_new)),
-
-          AppText(text: 'Consultant Profile',size: 24,fontWeight: FontWeight.bold),
-          SizedBox(height: 12),
-
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 8),
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: AppColors.primaryAppBar,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //Icon(Icons.person, size: 48, color: Colors.blue),
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.blue, width: 2),
-                  color: Colors.transparent, // optional background color
+      backgroundColor: const Color(0xFFF7F9FC),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  onPressed: () => Get.back(),
+                  icon: const Icon(Icons.arrow_back_ios_new),
                 ),
-                child: Center(
-                  child: Icon(Icons.person, size: 40, color: Colors.blue),
+                const SizedBox(height: 12),
+                AppText(
+                  text: 'Consultant Profile',
+                  size: 26,
+                  fontWeight: FontWeight.bold,
                 ),
-              ),
-
-              SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(consultant.name,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold)),
-                    Text(consultant.type,
-                        style: TextStyle(color: Colors.white,)),
-                    Row(
-                      children: List.generate(
-                        consultant.rating.floor(),
-                            (i) => Icon(Icons.star,
-                            color: Colors.orange, size: 16),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryAppBar,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 35,
+                        backgroundColor: Colors.white,
+                        child: const Icon(Icons.person, size: 40, color: Colors.blue),
                       ),
-                    ),
-
-
-                  ],
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              consultant.name,
+                              style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            Text(consultant.type, style: const TextStyle(color: Colors.white70)),
+                            Row(
+                              children: List.generate(
+                                consultant.rating.floor(),
+                                    (i) => const Icon(Icons.star, color: Colors.orange, size: 18),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => _launchUrl('mailto:iumar4770@gmail.com'),
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                        child: const Text('Email'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () {
-                  _launchUrl('mailto:iumar4770@gmail.com');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryAppBar,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText(
+                        text: "About Consultant",
+                        size: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 8),
+                      AppText(
+                        text: consultant.about,
+                        size: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white70,
+                      ),
+                      const SizedBox(height: 20),
+                      AppText(
+                        text: "Available Slot",
+                        size: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 8),
+                      AppText(
+                        text: consultant.availableSlots,
+                        size: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white70,
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton.icon(
+                        onPressed: _launchWhatsApp,
+                        icon: const Icon(Icons.chat),
+                        label: const Text("Chat on WhatsApp"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          minimumSize: const Size.fromHeight(50),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        onPressed: () => _launchUrl('mailto:iumar4770@gmail.com'),
+                        icon: const Icon(Icons.calendar_today),
+                        label: const Text("Book a Session"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          minimumSize: const Size.fromHeight(50),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Text('Chat Now'),
-              )
-            ],
+              ],
+            ),
           ),
         ),
-          SizedBox(height: 12),
-          Expanded(
-            child: Container(
-             
-              width: Get.width,
-              margin: EdgeInsets.symmetric(vertical: 8),
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.primaryAppBar,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText(text: "About Consultant",size: 24,fontWeight: FontWeight.bold,color: Colors.white),
-                  SizedBox(height: 08),
-                  AppText(text: consultant.about,size: 18,fontWeight: FontWeight.w400,color:Colors.white),
-                  SizedBox(height: 15),
-                  AppText(text: "Available Slot",size: 24,fontWeight: FontWeight.bold,color: Colors.white),
-                  SizedBox(height: 08),
-                  AppText(text: consultant.availableSlots,size: 18,fontWeight: FontWeight.w400,color:Colors.white),
-                Spacer(),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _launchWhatsApp,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                      ),
-                      child: Text('Chat Now'),
-                    ),
-                  ),
-                  SizedBox(height: 10,),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _launchUrl('mailto:iumar4770@gmail.com');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                      ),
-                      child: Text('Book a Session'),
-                    ),
-                  ),
-
-                ],
-            
-              ),
-            ),
-          )
-        ],
-      )
-        ,),
+      ),
     );
   }
 }

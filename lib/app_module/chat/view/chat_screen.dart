@@ -126,8 +126,13 @@ class ChatScreen extends StatelessWidget {
                   const SizedBox(width: 12),
                   GestureDetector(
                     onTap: () {
-                      controller.sendMessage(messageController.text);
-                      messageController.clear();
+                    controller.sendMessage(
+                    text: messageController.text,
+                    mood: controller.detectMoodFromText(messageController.text),
+                    age: controller.userAge.value,
+                    reason: null, // or pass a reason if needed
+                    );
+                    messageController.clear();
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(

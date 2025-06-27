@@ -1,124 +1,177 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:serenity_space/app_module/chat/view/chat_screen.dart';
-import 'package:serenity_space/app_module/home/widget/card.dart';
 import 'package:serenity_space/utils/app_color/app_color.dart';
-import 'package:serenity_space/utils/constant/string_constant.dart';
 import 'package:serenity_space/utils/fonts/app_fonts.dart';
-import 'package:serenity_space/widegts/app_text/app_text.dart';
 import 'package:serenity_space/widegts/app_text/textwidget.dart';
-import 'package:serenity_space/widegts/custom_size_box_widget/custom_sized_box.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../activities/activities_screen.dart';
+
 class AiScreen extends StatelessWidget {
   AiScreen({super.key});
-  void _launchWhatsApp() async {
 
-    String phoneNumber = "923174689617"; // Replace with your number
-    String message = Uri.encodeComponent("Serenity Space! How i can help you!");
+  void _launchWhatsApp() async {
+    String phoneNumber = "923174689617";
+    String message = Uri.encodeComponent("Serenity Space! How can I help you!");
     _launchUrl("https://wa.me/$phoneNumber?text=$message");
   }
-  void _launchUrl(String mail) async {
-    if (!await launchUrl(Uri.parse(mail))) throw 'Could not launch $mail';
+
+  void _launchUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw 'Could not launch $url';
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        height: Get.height,
         width: Get.width,
+        height: Get.height,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFF2E97E8), // Start color
-              Color(0xFF9BF2B1), // End color
-            ],
+            colors: [Color(0xFF2E97E8), Color(0xFF9BF2B1)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            double screenWidth = constraints.maxWidth;
-            double screenHeight = constraints.maxHeight;
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Donation card
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: TextWidget(
+                          text: 'Support our Mission\nBuy us a Coffee ☕',
+                          fSize: 18,
+                          fWeight: FontWeights.bold,
+                          textColor: Colors.white,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => _launchUrl('mailto:iumar4770@gmail.com'),
+                        icon: const Icon(Icons.coffee, color: Colors.white, size: 40),
+                      ),
+                    ],
+                  ),
+                ),
 
-            return Padding(
-              padding: const EdgeInsets.only(left: 14, right: 14, top: 50),
-child:  Column(
-  children: [
-    SizedBox(height: 12),
+                const SizedBox(height: 30),
 
-    Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.primaryAppBar,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          AppText(text: 'As we work free for you\nBuy us a Coffee',size: 18,fontWeight: FontWeight.bold,color: Colors.white),
+                // AI Introduction Text
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: TextWidget(
+                    text: 'Serenity Space: A Smarter Space for a Healthier Mind.\n\nYour AI-powered mental health companion for clarity and calm. 🌿',
+                    fSize: 16,
+                    align: TextAlign.center,
+                    fWeight: FontWeights.medium,
+                    textColor: Colors.white,
+                  ),
+                ),
 
-          IconButton( onPressed: () {
-    _launchUrl('mailto:iumar4770@gmail.com');
-    }, icon: const Icon(Icons.coffee,color: Colors.white,size: 40,)),
+                const SizedBox(height: 24),
 
+                // Serenity Chat Card
+                GestureDetector(
+                  onTap: () => Get.to(() => ChatScreen()),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryAppBar,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 6,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.smart_toy, color: Colors.white, size: 28),
+                        const SizedBox(width: 10),
+                        TextWidget(
+                          text: 'Chat with Serenity AI',
+                          fSize: 16,
+                          fWeight: FontWeights.bold,
+                          textColor: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
 
+                const SizedBox(height: 20),
 
-        ],
-      ),
-    ),
-    SizedBox(height: Get.height*0.15),
-    TextWidget(
-      text: 'Serenity Space: A Smarter Space for a Healthier Mind \n An AI-powered chatbot helping users find clarity and calm.',
-      fSize: 16,
-      align: TextAlign.center,
-      fWeight: FontWeights.medium,
-      textColor: Colors.white,
-    ),
-    SizedBox(height: Get.height*0.025),
-    GestureDetector(
-      onTap: (){
-        Get.to(ChatScreen());
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 8),
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.primaryAppBar,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextWidget(
-              text: 'Click Here to chat with Serenity AI',
-              fSize: 14,
-              align: TextAlign.center,
-              fWeight: FontWeights.medium,
+                // Wellness Activities Card
+                GestureDetector(
+                  onTap: () => Get.to(() => ActivitiesScreen()),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: const [
+                        Icon(Icons.self_improvement, color: Colors.teal, size: 28),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            'Explore Wellness Activities',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.teal,
+                            ),
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward_ios, size: 16, color: Colors.teal),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const Spacer(),
+              ],
             ),
-            IconButton( onPressed: () {
-
-            }, icon: const Icon(Icons.smart_toy,color: Colors.white,size: 25,)),
-          ],
+          ),
         ),
       ),
-    ),
-
-    Spacer(),
-
-  ],
-),
-
-            );
-          },
-        ),
-      ),
-
-
-
     );
   }
 }

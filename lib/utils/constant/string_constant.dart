@@ -1,5 +1,6 @@
 class MyText {
   static String appName = "Serenity Space";
+  static const String tagline = "Your wellness journey starts here";
 
   //get start
   static String getStart = "Start";

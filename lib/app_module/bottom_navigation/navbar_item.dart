@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:serenity_space/utils/fonts/app_fonts.dart';
@@ -10,7 +7,7 @@ import '../../utils/app_color/app_color.dart';
 import '../../widegts/app_text/app_text.dart';
 
 class BottomNavItem extends StatelessWidget {
-  final IconData icon; // Changed from Icon to IconData
+  final IconData icon;
   final int index;
   final String label;
   final int currentIndex;
@@ -27,26 +24,37 @@ class BottomNavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isSelected = currentIndex == index;
+
     return GestureDetector(
       onTap: () => onTap(index),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon, // Now it correctly takes IconData
-            color: currentIndex == index
-                ? AppColors.primaryAppBar
-                : AppColors.jetBlack,
-          ),
-          5.sbh,
-          AppText(
-              text: label,
-              color: currentIndex == index
+      child: SizedBox(
+        width: 60, // fixed width to maintain balance
+        height: 56, // standard nav bar item height
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 22,
+              color: isSelected
                   ? AppColors.primaryAppBar
                   : AppColors.jetBlack,
-              size: 8.sp,
-              fontWeight: FontWeights.regular)
-        ],
+            ),
+            4.sbh,
+            Flexible(
+              child: AppText(
+                text: label,
+                size: 9.sp,
+                overflow: TextOverflow.ellipsis,
+                color: isSelected
+                    ? AppColors.primaryAppBar
+                    : AppColors.jetBlack,
+                fontWeight: FontWeights.medium,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
